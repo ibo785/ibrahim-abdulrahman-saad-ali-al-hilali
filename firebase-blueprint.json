@@ -1,0 +1,161 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and metadata",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "points": { "type": "integer" },
+        "trustLevel": { "type": "number" },
+        "avatar": { "type": "string" },
+        "phone": { "type": "string" },
+        "location": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name", "email", "role"]
+    },
+    "Item": {
+      "title": "Item",
+      "description": "Items available for sharing or exchange",
+      "type": "object",
+      "properties": {
+        "ownerId": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "condition": { "type": "string", "enum": ["new", "like_new", "good", "fair", "poor"] },
+        "status": { "type": "string", "enum": ["available", "pending", "reserved", "exchanged"] },
+        "imageUrls": { "type": "array", "items": { "type": "string" } },
+        "aiSuggestedCategory": { "type": "string" },
+        "aiConfidence": { "type": "number" },
+        "aiProcessed": { "type": "boolean" },
+        "viewsCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerId", "title", "status", "createdAt"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Item categories",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "icon": { "type": "string" }
+      },
+      "required": ["name"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Exchange or donation transaction",
+      "type": "object",
+      "properties": {
+        "itemId": { "type": "string" },
+        "providerId": { "type": "string" },
+        "receiverId": { "type": "string" },
+        "type": { "type": "string", "enum": ["donation", "exchange", "request"] },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected", "completed", "cancelled"] },
+        "message": { "type": "string" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["itemId", "providerId", "receiverId", "type", "status", "createdAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Chat message",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "receiverId": { "type": "string" },
+        "itemId": { "type": "string" },
+        "text": { "type": "string" },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["senderId", "receiverId", "text", "createdAt"]
+    },
+    "PointsLog": {
+      "title": "PointsLog",
+      "description": "Log of point transactions",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "transactionId": { "type": "string" },
+        "amount": { "type": "integer" },
+        "action": { "type": "string", "enum": ["donated", "received", "exchanged", "bonus", "redeemed"] },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "amount", "action", "createdAt"]
+    },
+    "Wishlist": {
+      "title": "Wishlist",
+      "description": "User desired items",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "keywords": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "notifyOnMatch": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "keywords", "createdAt"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "User misconduct report",
+      "type": "object",
+      "properties": {
+        "reporterId": { "type": "string" },
+        "reportedUserId": { "type": "string" },
+        "reason": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "reviewed", "resolved"] },
+        "adminNotes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reporterId", "reportedUserId", "reason", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Fixed item categories"
+    },
+    "/items/{itemId}": {
+      "schema": "Item",
+      "description": "Shared items"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Sharing transactions"
+    },
+    "/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Direct messages between users"
+    },
+    "/points_log/{logId}": {
+      "schema": "PointsLog",
+      "description": "Audit trail for points"
+    },
+    "/wishlists/{wishlistId}": {
+      "schema": "Wishlist",
+      "description": "User watchlists for items"
+    },
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Misconduct reports"
+    }
+  }
+}
